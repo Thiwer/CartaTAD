@@ -1,6 +1,15 @@
 procedure Restaurant is
 
 begin
-   --  Insert code here.
+
+
+
+
+   -- Carga de datos iniciales
+
+   -- Movimiento de datos para mostrar funcionamiento
+
+
+
    null;
 end Restaurant;

@@ -1,9 +1,9 @@
-generic
+package carta is
+
    type key_component is (<>); -- tipo discreto componentes
    type key_index is range <>; -- rango de enteros, indice sobre la clave
    type key is array(key_index) of key_component;
 
-package carta is
    espacio_desbordado: exception;
 
    procedure carta_buida (s: out carta);
