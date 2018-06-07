@@ -1,8 +1,14 @@
+--
+-- Esto es la carta, es decir, el array que indexado por categorias y que cada 
+-- categoría (tcategoría) contiene los tries
+-- 
 package carta is
 
-   type key_component is (<>); -- tipo discreto componentes
-   type key_index is range <>; -- rango de enteros, indice sobre la clave
-   type key is array(key_index) of key_component;
+   type key_categoria is (entrat, primer, segon, postres, begudes); -- tipo discreto componentes
+   package dc is new dcola(elem => Unbounded_String);
+   use dc;
+   package categoria is new tcategoria(elem => Unbounded_String, ddcola =>dc);
+   use categoria;
 
    espacio_desbordado: exception;
 
@@ -28,11 +34,10 @@ package carta is
 
 
 private
-   type nodo;
-   type pnodo is access nodo;
-type nodo is array(key_component) of pnodo;
+   
+   type t_caregorias is array(key_categoria) of categoria;
    type carta is
       record
-         raiz: pnodo;
+         raiz: t_caregorias;
       end record;
 end carta;

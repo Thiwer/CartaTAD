@@ -1,5 +1,3 @@
-with Ada.Strings.Unbounded;
-use Ada.Strings.Unbounded;
 generic
    type elem is private;
 package dcola is
