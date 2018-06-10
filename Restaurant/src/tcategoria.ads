@@ -12,7 +12,7 @@ generic
     type key_codi is (<>);
     type key_index is range <>;
     type key is array(key_index) of key_codi;
-    type qualificacio is (bo, mitja, dolent);
+    type qualificacio is (<>);
 package tcategoria is
     type tipoNodo is (hoja, interior);
     type trie is limited private;
@@ -23,9 +23,9 @@ package tcategoria is
     espacio_desbordado: exception;
 
     procedure tvacio (t: out trie);
+    function existe(t: in trie; k: in key) return boolean;
     procedure poner (t: in out trie; k: in key; x: in Unbounded_String);
     procedure borrar(t: in out trie; k: in key);
-    procedure actualiza(t: in out trie; k: in key; x: in item);
 
     -- Necesitamos estas funciones del Iterador para poder devolver la lista 
     -- de elementos de la carta
@@ -33,13 +33,21 @@ package tcategoria is
     procedure next (t: in trie; it: in out iterator);
     function is_valid (it: in iterator) return boolean;
     procedure get (t: in trie; it: in iterator; k: out key; x: out Unbounded_String);
+
+    -- Estos métodos y funciones son para gestionar los comentarios de los elementos.
+    -- Puesto que en Carta tenemos los métodos por donde nos llegarán los comentarios
+    -- necesitamos gestionarlos desde nuestro trie (ya que el elemento final pertenece a este)
+    procedure poner_comentario_elemento(t: in trie; k: in key; q : in qualificacio; c: in Unbounded_String);
+    procedure consultar_comentario_elemento(t: in trie; k: in key; q : in qualificacio; c: out Unbounded_String);
+    function existe_comentario_elemento(t: in trie; k: in key; q : in qualificacio) return boolean;
+    procedure borrar_comentario_elemento(t: in trie; k: in key; q : in qualificacio);
 private
     -- Necesitamos una cola para ir almancenado los comentarios que
     -- tendrá cada elemento. Cada elemento contendrá un array indexado 
     -- por qualificacions (bo, mitja, dolent) donde cada una de las 
     -- posiciones del array contendrá una cola de comentarios. De tal 
     -- forma que los más antiguos serán los primeros es recuperarse 
-    package cat_cola is new tqualificacio(elem => Unbounded_String);
+    package cat_cola is new dcola(elem => Unbounded_String);
     use cat_cola;
 
     type nodo;
@@ -64,7 +72,7 @@ private
                 nombre: Unbounded_String;
                 c: comentarios;
             when interior =>
-                i: t_nodo;
+                ti: t_nodo;
         end case;
     end record;
 

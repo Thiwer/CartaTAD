@@ -10,28 +10,28 @@ package carta is
       -- Damos un margen de números naturales suficiente para poder abarcar
       -- todas las claves del subtipo codis
       type index is new Natural range 1..50;
-      type t_codi is array(index) of codi;
+      type tcodi is array(index) of codi;
 
       mal_uso: exception;
       no_existe: exception;
       ya_existe: exception;
       espacio_desbordado: exception;
 
-      procedure carta_buida (s: out carta);
+      procedure carta_buida (c: out carta);
       -- Introduce un plato en la carta
-      procedure posar_element (c: in out carta; cat : in tcategoria; k: in tcodi; nom: in Unbounded_String);
+      procedure posar_element (c: in out carta; cat : in categoria; k: in tcodi; nom: in Unbounded_String);
       -- Imprime todos los elementos de una categoria ordenados por codigo
-      procedure imprimir_elements(c : in carta; cat : in tcategoria);
+      procedure imprimir_elements(c : in carta; cat : in categoria);
       -- Elimina un plato de la carta
-      procedure eliminar_element (c: in out carta; cat : in tcategoria; k: in tcodi);
+      procedure eliminar_element (c: in out carta; cat : in categoria; k: in tcodi);
       -- Introduce un comentario
-      procedure posar_comentari(c : in out carta; cat : in tcategoria; k : in tcodi; q : in tqualificacio; comentari : in Unbounded_String);
+      procedure posar_comentari(c : in out carta; cat : in categoria; k : in tcodi; q : in tqualificacio; comentari : in Unbounded_String);
       -- Devuelve un comentario
-      function consulta_comentari(c : in out carta; cat : in tcategoria; k : in tcodi; q : in tqualificacio) return Unbounded_String);
+      function consulta_comentari(c : in out carta; cat : in categoria; k : in tcodi; q : in tqualificacio) return Unbounded_String);
       -- Existe un comentario
-      function existeix_comentari(c : in carta; cat : in tcategoria; k : in tcodi; q : in tqualificacio) return Boolean;
+      function existeix_comentari(c : in carta; cat : in categoria; k : in tcodi; q : in tqualificacio) return Boolean;
       -- Elimina un comentario
-      procedure eliminar_comentari (c : in out carta; cat : in tcategoria; k : in tcodi; cal : in tqualificacio) ;
+      procedure eliminar_comentari (c : in out carta; cat : in categoria; k : in tcodi; cal : in tqualificacio) ;
 
       -- function existe (s: in carta; x: in elem) return boolean;
       -- function esta_buida(s: in carta) return boolean;
