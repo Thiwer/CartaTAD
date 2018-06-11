@@ -1,3 +1,6 @@
+with carta;
+use carta;
+
 procedure Restaurant is
 
 begin
