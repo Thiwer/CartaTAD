@@ -1,9 +1,13 @@
-with carta;
-use carta;
+with packageCarta;
+use packageCarta;
 
 procedure Restaurant is
 
+   c: carta;
+
 begin
-   --  Insert code here.
-   null;
+
+   carta_buida(c);
+
+
 end Restaurant;

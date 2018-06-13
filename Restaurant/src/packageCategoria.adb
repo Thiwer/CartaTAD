@@ -1,5 +1,5 @@
 
-package body tcategoria is
+package body packageCategoria is
    mk: constant key_codi:= key_codi'first;
    lastc: constant key_codi:= key_codi'last;
    i0: constant key_index := key_index'first;
@@ -9,7 +9,7 @@ package body tcategoria is
    begin
       -- Como la raiz es el primer nodo, este tiene que ser de tipo
       -- interior de donde empezarán a colgarse los demás interiores.
-      -- Por defecto, estos apuntarán a null para indicar que no hay 
+      -- Por defecto, estos apuntarán a null para indicar que no hay
       -- un puntero válido
       raiz:= new nodo(interior);
       raiz.ti := (others => null);
@@ -34,10 +34,11 @@ package body tcategoria is
       p: pnodo;
       i: key_index;
       c: key_codi;
+      indice: Integer;
    begin
-      p:= raiz; i:= i0; c:= k(i);
-      while c/=mk and p.ti(c)/= null loop
-         p:= p.ti(c); i:= i+1; c:= k(i);
+      p:= raiz; i:= i0; c:= k(i); indice:= 0;
+      while indice < k'Length and p.ti(c)/= null loop
+         p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
       end loop;
       return c=mk and then p.ti(mk).t=hoja;
    end existe;
@@ -47,9 +48,10 @@ package body tcategoria is
       p, r: pnodo;
       i: key_index;
       c: key_codi;
+      indice: Integer;
    begin
       if existe(t, k) then raise ya_existe; end if;
-      p:= raiz; i:= i0; c:= k(i);
+      p:= raiz; i:= i0; c:= k(i); indice := 0;
       -- Dado el código, vamos mirando si existe el camino.
       -- En caso de que no existe un puntero válido para ese k(i)
       -- tenemos que crear un nuevo nodo interior, es decir, un nuevo
@@ -58,18 +60,19 @@ package body tcategoria is
       -- Una vez lleguemos al último k(i), tendremos que crear un nuevo nodo
       -- de tipo hoja y hacer que la marca mk del último nodo interior apunte ahí que
       -- será nuestro elemento
-      while c/=mk loop
+
+      while indice < k'Length loop
          if p.ti(c)=null then
             r:= new nodo(interior);
             r.ti:= (others => null);
             p.ti(c):= r;
          end if ;
-         p:= p.ti(c); i:= i+1; c:= k(i);
+         p:= p.ti(c); i:= i+1; c:= k(i); indice:= i+1;
       end loop;
-      r:= new nodo(hoja); 
+      r:= new nodo(hoja);
       r.name:=x;
-        
-      -- Nuestro elemento tiene un array de comentarios. Este array contiene cada 
+
+      -- Nuestro elemento tiene un array de comentarios. Este array contiene cada
       -- uno una cola de comentarios, la cual se tiene que iniciarlizar cada
       -- vez que se introduce un elemento.
       for q in qualificacio loop
@@ -103,12 +106,13 @@ package body tcategoria is
       p, r: pnodo;
       i: key_index;
       c, cr: key_codi;
+      indice: Integer;
    begin
       if not existe(t, k) then raise no_existe; end if;
-      p:= raiz; i:= i0; c:= k(i); r:= p; cr:= c;
-      while c/=mk and p.ti(c)/= null loop
+      p:= raiz; i:= i0; c:= k(i); r:= p; cr:= c; indice:= 0;
+      while indice < k'Length and p.ti(c)/= null loop
          if not unico_desc(p) then r:= p; cr:= c; end if ;
-         p:= p.ti(c); i:= i+1; c:= k(i);
+         p:= p.ti(c); i:= i+1; c:= k(i); indice := indice+1;
       end loop;
       if c=mk and then p.ti(mk).tn=leaf then
          if unico_desc(p) then r.ti(cr):= null;
@@ -117,7 +121,7 @@ package body tcategoria is
       end if ;
    end borrar;
 
-   -- Necesitamos estas funciones del Iterador para poder devolver la lista 
+   -- Necesitamos estas funciones del Iterador para poder devolver la lista
    -- de elementos de la carta
    procedure firstbranch(p: in pnodo; c: out key_codi; found: out boolean) is
    begin
@@ -136,11 +140,13 @@ package body tcategoria is
       c: key_codi;
       p: pnodo;
       found: boolean;
+      indice: Integer;
    begin
       p:= raiz; i:= i0;
       firstbranch(p, c, found);
-      while found and c/=mk loop
-         pth(i):= p; k(i):= c; i:= i+1;
+      indice := 0;
+      while found and indice < k'Length loop
+         pth(i):= p; k(i):= c; i:= i+1; indice := indice+1;
          p:= p.all(c);
          firstbranch(p, c, found);
       end loop;
@@ -165,7 +171,7 @@ package body tcategoria is
       found: boolean;
    begin
       if k(i0)=mk then raise bad_use; end if ;
-      p:= pth(i); c:= k(i); 
+      p:= pth(i); c:= k(i);
       nextbranch(p, c, found);
       while not found and i>1 loop
          i:= i-1; p:= pth(i); c:= k(i);
@@ -193,4 +199,70 @@ package body tcategoria is
       k:= it.k;
       x:= pth(i).ti(mk).name;
    end get;
-end tcategoria;
+
+
+   -- Metodos de comentarios
+
+   procedure getCola(t: in trie; k: in key; q : in tqualificacio ; queue : out cola) is
+      raiz: pnodo renames t.raiz;
+      p: pnodo;
+      i: key_index;
+      c: key_codi;
+      indice: Integer;
+   begin
+      -- Bucle del existe
+      p:= raiz; i:= i0; c:= k(i); indice:= 0;
+      while indice < k'Length and p.ti(c)/= null loop
+         p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
+      end loop;
+
+      -- Si no existe
+      if not c=md and then not p.ti(mk).t=hoja then
+         raise no_existe;
+      end if;
+
+      queue := p.c(q);
+
+   end getCola;
+
+   procedure poner_comentario_elemento(t: in trie; k: in key; q : in tqualificacio; c: in Unbounded_String) is
+      queue : cola;
+   begin
+
+      getCola(t, k, q, queue);
+      poner(queue, c);
+
+   end poner_comentario_elemento;
+
+   procedure consultar_comentario_elemento(t: in trie; k: in key; q : in tqualificacio; c: out Unbounded_String) is
+      queue : cola;
+   begin
+
+      getCola(t, k, q, queue);
+      return coger_primero(queue);
+
+   end consultar_comentario_elemento;
+
+
+   function existe_comentario_elemento(t: in trie; k: in key; q : in tqualificacio) return boolean is
+      queue : cola;
+   begin
+
+      -- Copiar e iterar?
+
+      getCola(t, k, q, queue);
+
+   end existe_comentario_elemento;
+
+
+   procedure borrar_comentario_elemento(t: in trie; k: in key; q : in tqualificacio) is
+   queue : cola;
+   begin
+
+      getCola(t, k, q, queue);
+      borrar_primero(queue);
+
+   end borrar_comentario_elemento;
+
+
+end packageCategoria;

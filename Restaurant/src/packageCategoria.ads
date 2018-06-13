@@ -16,13 +16,10 @@ generic
    type key_codi is (<>);
    type key_index is range <>;
    type key is array(key_index) of key_codi;
+   type tqualificacio is (<>);
 
-package tcategoria is
-   
-   type tcategoria is (Entrant, Primer, Segon, Postres, Begudes);
-   
-   type tqualificacio is (Bo, Mitja, Dolent);
-   
+package packageCategoria is
+
    type tipoNodo is (hoja, interior);
    type trie is limited private;
 
@@ -36,7 +33,7 @@ package tcategoria is
    procedure poner (t: in out trie; k: in key; x: in Unbounded_String);
    procedure borrar(t: in out trie; k: in key);
 
-   -- Necesitamos estas funciones del Iterador para poder devolver la lista 
+   -- Necesitamos estas funciones del Iterador para poder devolver la lista
    -- de elementos de la carta
    type iterator is limited private;
    procedure first (t: in trie; it: out iterator);
@@ -51,20 +48,20 @@ package tcategoria is
    procedure consultar_comentario_elemento(t: in trie; k: in key; q : in tqualificacio; c: out Unbounded_String);
    function existe_comentario_elemento(t: in trie; k: in key; q : in tqualificacio) return boolean;
    procedure borrar_comentario_elemento(t: in trie; k: in key; q : in tqualificacio);
-   
+
 private
    -- Necesitamos una cola para ir almancenado los comentarios que
-   -- tendrá cada elemento. Cada elemento contendrá un array indexado 
-   -- por qualificacions (bo, mitja, dolent) donde cada una de las 
-   -- posiciones del array contendrá una cola de comentarios. De tal 
-   -- forma que los más antiguos serán los primeros es recuperarse 
-    
+   -- tendrá cada elemento. Cada elemento contendrá un array indexado
+   -- por qualificacions (bo, mitja, dolent) donde cada una de las
+   -- posiciones del array contendrá una cola de comentarios. De tal
+   -- forma que los más antiguos serán los primeros es recuperarse
+
 
    type nodo;
    type pnodo is access nodo;
-    
+
    -- Este array se utilizará para los nodos intermedios.
-   -- Los cuales serán un array de pnodos donde cada posicion 
+   -- Los cuales serán un array de pnodos donde cada posicion
    -- apuntará a otro nodo.
    type t_nodo is array(key_codi) of pnodo;
 
@@ -103,7 +100,7 @@ private
       record
          raiz: pnodo;
       end record;
-   
-   type categoria is array(tcategoria) of trie;
-   
-end tcategoria;
+
+   --type categoria is array(tcategoria) of trie;
+
+end packageCategoria;
