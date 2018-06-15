@@ -6,6 +6,7 @@ use Ada.Strings.Unbounded;
 -- categoría (tcategoría) contiene los tries
 --
 package packageCarta is
+
    type carta is limited private;
    subtype codi is Character range '@' .. 'Z';
    -- Damos un margen de números naturales suficiente para poder abarcar

@@ -13,7 +13,7 @@ package body packageCategoria is
       -- un puntero válido
       raiz:= new nodo(interior);
       raiz.ti := (others => null);
-   end cvacio;
+   end tvacio;
 
    function esta_vacio(t: in trie) return boolean is
       raiz: pnodo renames t.raiz;
@@ -67,16 +67,16 @@ package body packageCategoria is
             r.ti:= (others => null);
             p.ti(c):= r;
          end if ;
-         p:= p.ti(c); i:= i+1; c:= k(i); indice:= i+1;
+         p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
       end loop;
       r:= new nodo(hoja);
-      r.name:=x;
+      r.nombre:=x;
 
       -- Nuestro elemento tiene un array de comentarios. Este array contiene cada
       -- uno una cola de comentarios, la cual se tiene que iniciarlizar cada
       -- vez que se introduce un elemento.
-      for q in qualificacio loop
-         empty(r.c(q));
+      for q in tqualificacio'Range loop
+         cvacia(r.c(q));
       end loop;
 
       -- En nuestro nodo interior, tenemos que hacer que la mk apunte a nuestro
@@ -114,7 +114,7 @@ package body packageCategoria is
          if not unico_desc(p) then r:= p; cr:= c; end if ;
          p:= p.ti(c); i:= i+1; c:= k(i); indice := indice+1;
       end loop;
-      if c=mk and then p.ti(mk).tn=leaf then
+      if c=mk and then p.ti(mk).t=hoja then
          if unico_desc(p) then r.ti(cr):= null;
          else p.ti(mk):= null;
          end if ;
@@ -147,7 +147,7 @@ package body packageCategoria is
       indice := 0;
       while found and indice < k'Length loop
          pth(i):= p; k(i):= c; i:= i+1; indice := indice+1;
-         p:= p.all(c);
+         p:= p.ti(c);
          firstbranch(p, c, found);
       end loop;
       pth(i):= p; k(i):= mk;
@@ -170,7 +170,7 @@ package body packageCategoria is
       p: pnodo;
       found: boolean;
    begin
-      if k(i0)=mk then raise bad_use; end if ;
+      if k(i0)=mk then raise mal_uso; end if ;
       p:= pth(i); c:= k(i);
       nextbranch(p, c, found);
       while not found and i>1 loop
@@ -191,19 +191,64 @@ package body packageCategoria is
       return k(i0)/=mk;
    end is_valid;
 
-   procedure get(t: in trie; it: in iterator; k: out key; x: out Unbounded_String) is
+   procedure get(t: in trie; it: in iterator; x: out Unbounded_String) is
       i: key_index renames it.i;
-      pth: renames it.pth;
+      pth: path renames it.pth;
    begin
       if it.k(i0)=mk then raise mal_uso; end if;
-      k:= it.k;
-      x:= pth(i).ti(mk).name;
+      --k:= it.k;
+      x:= pth(i).ti(mk).nombre;
    end get;
 
 
    -- Metodos de comentarios
 
-   procedure getCola(t: in trie; k: in key; q : in tqualificacio ; queue : out cola) is
+   procedure poner_comentario_elemento(t: in trie; k: in key; q : in tqualificacio; c: in Unbounded_String) is
+      raiz: pnodo renames t.raiz;
+      p: pnodo;
+      i: key_index;
+      kc: key_codi;
+      indice: Integer;
+   begin
+      -- Bucle del existe
+      p:= raiz; i:= i0; kc:= k(i); indice:= 0;
+      while indice < k'Length and p.ti(kc)/= null loop
+         p:= p.ti(kc); i:= i+1; kc:= k(i); indice:= indice+1;
+      end loop;
+
+      if kc=mk and then p.ti(mk).t=hoja then
+         poner(p.c(q), c);
+      else
+         raise no_existe;
+      end if;
+
+      -- getCola(t, k, q, queue);
+
+
+   end poner_comentario_elemento;
+
+   procedure consultar_comentario_elemento(t: in trie; k: in key; q : in tqualificacio; c: out Unbounded_String) is
+     raiz: pnodo renames t.raiz;
+      p: pnodo;
+      i: key_index;
+      kc: key_codi;
+      indice: Integer;
+   begin
+      -- Bucle del existe
+      p:= raiz; i:= i0; kc:= k(i); indice:= 0;
+      while indice < k'Length and p.ti(kc)/= null loop
+         p:= p.ti(kc); i:= i+1; kc:= k(i); indice:= indice+1;
+      end loop;
+
+      if kc=mk and then p.ti(mk).t=hoja then
+         c:= coger_primero(p.c(q));
+      else
+         raise mal_uso;
+      end if;
+   end consultar_comentario_elemento;
+
+
+   function existe_comentario_elemento(t: in trie; k: in key; q : in tqualificacio) return boolean is
       raiz: pnodo renames t.raiz;
       p: pnodo;
       i: key_index;
@@ -216,51 +261,33 @@ package body packageCategoria is
          p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
       end loop;
 
-      -- Si no existe
-      if not c=md and then not p.ti(mk).t=hoja then
-         raise no_existe;
+      if c=mk and then p.ti(mk).t=hoja then
+         return esta_vacia(p.c(q));
       end if;
 
-      queue := p.c(q);
-
-   end getCola;
-
-   procedure poner_comentario_elemento(t: in trie; k: in key; q : in tqualificacio; c: in Unbounded_String) is
-      queue : cola;
-   begin
-
-      getCola(t, k, q, queue);
-      poner(queue, c);
-
-   end poner_comentario_elemento;
-
-   procedure consultar_comentario_elemento(t: in trie; k: in key; q : in tqualificacio; c: out Unbounded_String) is
-      queue : cola;
-   begin
-
-      getCola(t, k, q, queue);
-      return coger_primero(queue);
-
-   end consultar_comentario_elemento;
-
-
-   function existe_comentario_elemento(t: in trie; k: in key; q : in tqualificacio) return boolean is
-      queue : cola;
-   begin
-
-      -- Copiar e iterar?
-
-      getCola(t, k, q, queue);
+      return False;
 
    end existe_comentario_elemento;
 
 
    procedure borrar_comentario_elemento(t: in trie; k: in key; q : in tqualificacio) is
-   queue : cola;
+   raiz: pnodo renames t.raiz;
+      p: pnodo;
+      i: key_index;
+      c: key_codi;
+      indice: Integer;
    begin
+      -- Bucle del existe
+      p:= raiz; i:= i0; c:= k(i); indice:= 0;
+      while indice < k'Length and p.ti(c)/= null loop
+         p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
+      end loop;
 
-      getCola(t, k, q, queue);
-      borrar_primero(queue);
+      if c=mk and then p.ti(mk).t=hoja then
+         borrar_primero(p.c(q));
+      else
+         raise mal_uso;
+      end if;
 
    end borrar_comentario_elemento;
 

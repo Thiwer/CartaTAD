@@ -20,6 +20,7 @@ generic
 
 package packageCategoria is
 
+   type iterator is limited private;
    type tipoNodo is (hoja, interior);
    type trie is limited private;
 
@@ -35,11 +36,11 @@ package packageCategoria is
 
    -- Necesitamos estas funciones del Iterador para poder devolver la lista
    -- de elementos de la carta
-   type iterator is limited private;
+
    procedure first (t: in trie; it: out iterator);
    procedure next (t: in trie; it: in out iterator);
    function is_valid (it: in iterator) return boolean;
-   procedure get (t: in trie; it: in iterator; k: out key; x: out Unbounded_String);
+   procedure get (t: in trie; it: in iterator; x: out Unbounded_String);
 
    -- Estos métodos y funciones son para gestionar los comentarios de los elementos.
    -- Puesto que en Carta tenemos los métodos por donde nos llegarán los comentarios

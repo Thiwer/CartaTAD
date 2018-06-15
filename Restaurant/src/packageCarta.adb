@@ -1,9 +1,9 @@
+with Ada.Text_IO; use Ada.Text_IO;
 package body packageCarta is
 
    -- Vaciar la carta
    procedure carta_buida (c: out carta) is
       tc: t_carta renames c.c;
-      t : trie;
    begin
       -- Para cada una de las categorias lo limpiamos
       for x in tcategoria'Range loop
@@ -18,61 +18,60 @@ package body packageCarta is
       t : trie;
    begin
 
-         t := tc(cat);
-
-      if existe(t, k) then
-         raise mal_uso; -- Ya existe un plato con ese codigo
+      if existe(tc(cat), k) then
+         raise ya_existe; -- Ya existe un plato con ese codigo
       end if;
 
-      poner(t, k, nom);
+      poner(tc(cat), k, nom);
 
    end posar_element;
 
    -- Imprime todos los elementos de una categoria ordenados por codigo
    procedure imprimir_elements(c : in carta; cat : in tcategoria) is
+      tc: t_carta renames c.c;
+      it: iterator;
+      elemento : Unbounded_String;
    begin
-      null;
+
+      first(tc(cat), it);
+      while is_valid(it) loop
+         get(tc(cat), it, elemento);
+         Put_Line(To_String(elemento));
+         next(tc(cat), it);
+      end loop;
+
+
    end imprimir_elements;
 
    -- Elimina un plato de la carta
    procedure eliminar_element (c: in out carta; cat : in tcategoria; k: in tcodi) is
-      t: trie;
+      tc: t_carta renames c.c;
    begin
 
-      t := c(cat);
+      if not existe(tc(cat), k) then
+         raise no_existe; -- No existe
+      end if;
 
-      borrar(t, k);
+      borrar(tc(cat), k);
 
    end eliminar_element;
 
    -- Introduce un comentario
    procedure posar_comentari(c : in out carta; cat : in tcategoria; k : in tcodi; q : in tqualificacio; comentari : in Unbounded_String) is
-      t: trie;
+      tc: t_carta renames c.c;
    begin
 
-      t := c(cat);
-
-      if existe_comentario_elemento(t, k, q) then
-         raise mal_uso;
-      end if;
-
-      poner_comentario_elemento(t, k, q, comentari);
+      poner_comentario_elemento(tc(cat), k, q, comentari);
 
    end posar_comentari;
 
    -- Devuelve un comentario
    function consulta_comentari(c : in out carta; cat : in tcategoria; k : in tcodi; q : in tqualificacio) return Unbounded_String is
-      t: trie;
       comentari : Unbounded_String;
+      tc: t_carta renames c.c;
    begin
 
-      t := c(cat);
-
-      if not existe_comentario_elemento(t, k, q) then
-         raise mal_uso;
-      end if;
-
-      consultar_comentario_elemento(t, k, q, comentari);
+      consultar_comentario_elemento(tc(cat), k, q, comentari);
 
       return comentari;
 
@@ -80,27 +79,19 @@ package body packageCarta is
 
    -- Existe un comentario
    function existeix_comentari(c : in carta; cat : in tcategoria; k : in tcodi; q : in tqualificacio ) return Boolean is
-      t: trie;
+      tc: t_carta renames c.c;
    begin
 
-      t := c(cat);
-
-      return existe_comentario_elemento(t, k, q) ;
+      return existe_comentario_elemento(tc(cat), k, q) ;
 
    end existeix_comentari;
 
    -- Elimina un comentario
    procedure eliminar_comentari (c : in out carta; cat : in tcategoria; k : in tcodi; q : in tqualificacio) is
-      t: trie;
+      tc: t_carta renames c.c;
    begin
 
-      t := c(cat);
-
-      if not existe_comentario_elemento(t, k, q) then
-         raise mal_uso;
-      end if;
-
-      borrar_comentario_elemento(t, k, q);
+      borrar_comentario_elemento(tc(cat), k, q);
 
    end eliminar_comentari;
 
