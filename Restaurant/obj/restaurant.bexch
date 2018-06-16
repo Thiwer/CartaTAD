@@ -1,0 +1,22 @@
+[GENERATED OBJECT FILE]
+b__restaurant.o
+[PROJECT FILES]
+C:\Users\Victor\Desktop\Estructura de Datos\Practicas\CartaTAD\Restaurant\carta.gpr
+20180607172620
+[BOUND OBJECT FILES]
+C:\Users\Victor\Desktop\Estructura de Datos\Practicas\CartaTAD\Restaurant\obj\dcola.o
+C:\Users\Victor\Desktop\Estructura de Datos\Practicas\CartaTAD\Restaurant\obj\packageCategoria.o
+C:\Users\Victor\Desktop\Estructura de Datos\Practicas\CartaTAD\Restaurant\obj\packageCarta.o
+C:\Users\Victor\Desktop\Estructura de Datos\Practicas\CartaTAD\Restaurant\obj\restaurant.o
+[GENERATED SOURCE FILES]
+b__restaurant.ads
+b__restaurant.adb
+b__restaurant.ali
+[RESULTING OPTIONS]
+-LC:\Users\Victor\Desktop\Estructura de Datos\Practicas\CartaTAD\Restaurant\obj\
+-LC:\Users\Victor\Desktop\Estructura de Datos\Practicas\CartaTAD\Restaurant\obj\
+-LC:/gnat/2017/lib/gcc/i686-pc-mingw32/6.3.1/adalib/
+-static
+-static-libgcc
+C:/gnat/2017/lib/gcc/i686-pc-mingw32/6.3.1/adalib/libgnat.a
+-Wl,--stack=0x2000000

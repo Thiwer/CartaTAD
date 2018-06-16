@@ -56,8 +56,6 @@ private
    -- por qualificacions (bo, mitja, dolent) donde cada una de las
    -- posiciones del array contendrá una cola de comentarios. De tal
    -- forma que los más antiguos serán los primeros es recuperarse
-
-
    type nodo;
    type pnodo is access nodo;
 
@@ -69,7 +67,7 @@ private
    package cat_cola is new dcola(elem => Unbounded_String);
    use cat_cola;
    -- Array indexado por claves, para los comentarios
-   type qualificacions is array(tqualificacio) of cat_cola.cola;
+   type qualificacions is array(tqualificacio) of cola;
 
    -- Tendremos dos tipos de nodos, los interiores y los hoja
    -- Los interiores serán un nuevo array de punteros

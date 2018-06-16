@@ -17,13 +17,9 @@ package body packageCarta is
       tc: t_carta renames c.c;
       t : trie;
    begin
-
-      if existe(tc(cat), k) then
-         raise ya_existe; -- Ya existe un plato con ese codigo
-      end if;
-
+      -- Ya existe un plato con ese codigo
+      if existe(tc(cat), k) then raise ya_existe; end if;
       poner(tc(cat), k, nom);
-
    end posar_element;
 
    -- Imprime todos los elementos de una categoria ordenados por codigo
@@ -31,12 +27,22 @@ package body packageCarta is
       tc: t_carta renames c.c;
       it: iterator;
       elemento : Unbounded_String;
+      i,j: Integer:=0;
    begin
-
+      j:= 49;
       first(tc(cat), it);
       while is_valid(it) loop
          get(tc(cat), it, elemento);
-         Put_Line(To_String(elemento));
+         i:= Length(elemento) + 10;
+         Put("*         - " & To_String(elemento));
+
+         while i<j loop
+            Put(" ");
+            i:=i+1;
+         end loop;
+
+         Put_Line("*");
+
          next(tc(cat), it);
       end loop;
 

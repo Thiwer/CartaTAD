@@ -17,6 +17,7 @@ package body dcola is
 
    function coger_primero(c: in cola) return elem is
       q: pnodo renames c.q;
+      b: Boolean:= false;
    begin
       return q.x;
    exception

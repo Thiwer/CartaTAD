@@ -1,3 +1,4 @@
+with Ada.Text_IO; use Ada.Text_IO;
 
 package body packageCategoria is
    mk: constant key_codi:= key_codi'first;
@@ -34,11 +35,10 @@ package body packageCategoria is
       p: pnodo;
       i: key_index;
       c: key_codi;
-      indice: Integer;
    begin
-      p:= raiz; i:= i0; c:= k(i); indice:= 0;
-      while indice < k'Length and p.ti(c)/= null loop
-         p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
+      p:= raiz; i:= i0; c:= k(i);
+      while c /= mk and p.ti(c)/= null loop
+         p:= p.ti(c); i:= i+1; c:= k(i);
       end loop;
       return c=mk and then p.ti(mk).t=hoja;
    end existe;
@@ -48,10 +48,10 @@ package body packageCategoria is
       p, r: pnodo;
       i: key_index;
       c: key_codi;
-      indice: Integer;
    begin
       if existe(t, k) then raise ya_existe; end if;
-      p:= raiz; i:= i0; c:= k(i); indice := 0;
+
+      p:= raiz; i:= i0; c:= k(i);
       -- Dado el código, vamos mirando si existe el camino.
       -- En caso de que no existe un puntero válido para ese k(i)
       -- tenemos que crear un nuevo nodo interior, es decir, un nuevo
@@ -61,13 +61,13 @@ package body packageCategoria is
       -- de tipo hoja y hacer que la marca mk del último nodo interior apunte ahí que
       -- será nuestro elemento
 
-      while indice < k'Length loop
+      while c /= mk loop
          if p.ti(c)=null then
             r:= new nodo(interior);
             r.ti:= (others => null);
             p.ti(c):= r;
          end if ;
-         p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
+         p:= p.ti(c); i:= i+1; c:= k(i);
       end loop;
       r:= new nodo(hoja);
       r.nombre:=x;
@@ -106,14 +106,14 @@ package body packageCategoria is
       p, r: pnodo;
       i: key_index;
       c, cr: key_codi;
-      indice: Integer;
    begin
       if not existe(t, k) then raise no_existe; end if;
-      p:= raiz; i:= i0; c:= k(i); r:= p; cr:= c; indice:= 0;
-      while indice < k'Length and p.ti(c)/= null loop
+      p:= raiz; i:= i0; c:= k(i); r:= p; cr:= c;
+      while c /= mk and p.ti(c)/= null loop
          if not unico_desc(p) then r:= p; cr:= c; end if ;
-         p:= p.ti(c); i:= i+1; c:= k(i); indice := indice+1;
+         p:= p.ti(c); i:= i+1; c:= k(i);
       end loop;
+
       if c=mk and then p.ti(mk).t=hoja then
          if unico_desc(p) then r.ti(cr):= null;
          else p.ti(mk):= null;
@@ -125,7 +125,7 @@ package body packageCategoria is
    -- de elementos de la carta
    procedure firstbranch(p: in pnodo; c: out key_codi; found: out boolean) is
    begin
-      c:= mk; found:= (p.ti(c)/=null);
+      c:= mk; found:= false;
       while c < lastc and not found loop
          c:= key_codi'succ(c);
          found:= (p.ti(c)/=null);
@@ -208,22 +208,19 @@ package body packageCategoria is
       p: pnodo;
       i: key_index;
       kc: key_codi;
-      indice: Integer;
+      esNull: Boolean:= false;
    begin
       -- Bucle del existe
-      p:= raiz; i:= i0; kc:= k(i); indice:= 0;
-      while indice < k'Length and p.ti(kc)/= null loop
-         p:= p.ti(kc); i:= i+1; kc:= k(i); indice:= indice+1;
+      p:= raiz; i:= i0; kc:= k(i);
+      while kc /= mk and p.ti(kc)/= null loop
+         p:= p.ti(kc); i:= i+1; kc:= k(i);
       end loop;
 
-      if kc=mk and then p.ti(mk).t=hoja then
-         poner(p.c(q), c);
+      if kc=mk and then p.ti(mk).t = hoja then
+         poner(p.ti(mk).c(q), c);
       else
          raise no_existe;
       end if;
-
-      -- getCola(t, k, q, queue);
-
 
    end poner_comentario_elemento;
 
@@ -232,16 +229,15 @@ package body packageCategoria is
       p: pnodo;
       i: key_index;
       kc: key_codi;
-      indice: Integer;
    begin
       -- Bucle del existe
-      p:= raiz; i:= i0; kc:= k(i); indice:= 0;
-      while indice < k'Length and p.ti(kc)/= null loop
-         p:= p.ti(kc); i:= i+1; kc:= k(i); indice:= indice+1;
+      p:= raiz; i:= i0; kc:= k(i);
+      while kc /= mk and p.ti(kc)/= null loop
+         p:= p.ti(kc); i:= i+1; kc:= k(i);
       end loop;
 
       if kc=mk and then p.ti(mk).t=hoja then
-         c:= coger_primero(p.c(q));
+         c:= coger_primero(p.ti(mk).c(q));
       else
          raise mal_uso;
       end if;
@@ -253,16 +249,15 @@ package body packageCategoria is
       p: pnodo;
       i: key_index;
       c: key_codi;
-      indice: Integer;
    begin
       -- Bucle del existe
-      p:= raiz; i:= i0; c:= k(i); indice:= 0;
-      while indice < k'Length and p.ti(c)/= null loop
-         p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
+      p:= raiz; i:= i0; c:= k(i);
+      while c /= mk and p.ti(c)/= null loop
+         p:= p.ti(c); i:= i+1; c:= k(i);
       end loop;
 
       if c=mk and then p.ti(mk).t=hoja then
-         return esta_vacia(p.c(q));
+         return not esta_vacia(p.ti(mk).c(q));
       end if;
 
       return False;
@@ -279,12 +274,12 @@ package body packageCategoria is
    begin
       -- Bucle del existe
       p:= raiz; i:= i0; c:= k(i); indice:= 0;
-      while indice < k'Length and p.ti(c)/= null loop
+      while c /= mk and p.ti(c)/= null loop
          p:= p.ti(c); i:= i+1; c:= k(i); indice:= indice+1;
       end loop;
 
       if c=mk and then p.ti(mk).t=hoja then
-         borrar_primero(p.c(q));
+         borrar_primero(p.ti(mk).c(q));
       else
          raise mal_uso;
       end if;
