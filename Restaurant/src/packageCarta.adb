@@ -5,7 +5,8 @@ package body packageCarta is
    procedure carta_buida (c: out carta) is
       tc: t_carta renames c.c;
    begin
-      -- Para cada una de las categorias lo limpiamos
+      -- Inicializamos cada una de las categorías, es decir,
+      -- ponemos a null la raiz de cada trie
       for x in tcategoria'Range loop
          tvacio(tc(x));
       end loop;
@@ -29,6 +30,10 @@ package body packageCarta is
       elemento : Unbounded_String;
       i,j: Integer:=0;
    begin
+
+      -- Para decorar la impresión de la carta, se han añadido algunos detalles
+      -- estáticos de longitudes de espacions intercalados en el bucle
+
       j:= 49;
       first(tc(cat), it);
       while is_valid(it) loop
