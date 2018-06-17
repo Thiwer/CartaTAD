@@ -1,0 +1,39 @@
+Práctica 3
+Estructura de Datos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Rivas García, Daniel
+Torrandell, Víctor
+1.Estructuras usadas.
+La estructura que hemos escogido se compone de 4 partes principales:
+    1. Array indexado por clave. Este array esta indexado por las 	categorías de platos, puesto que conocemos todas las categorías, de esta manera nos queda un array con 5 posiciones. En cada una de estas posiciones tenemos un ‘trie’. Se ha escogido esta estructura porque se conoce la longitud de los elementos, por lo que con un array indexado por clave nos tenemos un tiempo de Inserción, Consulta y Borrado O(1).
+    2. Trie. Dentro del array indexado por clave tenemos un ‘trie’ por cada categoría. Estos arboles se componen de los códigos de los platos, los nodos interiores tienen los caracteres de los códigos que nos permitirán movernos por el árbol, por otra parte, los nodos hoja contienen el nombre del plato y un array con los comentarios. Se ha escogido esta estructura puesto que como el volumen de platos va a ser muy grande, esta estructura nos permite un tiempo de Inserción, Consulta y Borrado de O(1). Se ha descartado la opción de una tabla de Hash puesto que se ha de poder borrar.
+    3. Array indexado por clave. Este array esta indexado por las calificaciones de los comentarios, puesto que conocemos las posibles calificaciones, de esta manera será un array de 3 posiciones. En cada una de estas posiciones tenemos un cola. Se ha escogido esta estructura porque se conoce la longitud de los elementos, por lo que con un array indexado por clave tenemos un tiempo de Inserción, Consulta y Borrado O(1).
+    4. Cola. Esta cola contiene todos los comentarios de un tipo de comentario de un plato. Los elementos que contienen estas colas son ‘Unbounded_String’. Se ha escogido esta implementación puesto que solamente es necesario acceder directamente al primer elemento y esta estructura nos da esa opción de un tiempo O(1), además de las otras funciones que se requieren de saber si hay algún comentario o borrar el primero, que también se realizan en un tiempo O(1).
+
+A continuación se muestra una imagen con el diseño que se ha explicado por tal de aclarar las estructuras utilizadas:
+
